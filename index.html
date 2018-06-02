@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="./index.css"></link>
+  <link rel="stylesheet" href="./spectrum.css"></link>
   <title>Testing Canvas</title>
   <script src="./jquery-3.3.1.js"></script>
+  <script src="./spectrum.js"></script>
 </head>
 <body oncontextmenu="return false;">
   <div class="tray-outer closed-tray">
@@ -12,6 +14,13 @@
       <div class="caret-open">►</div>
     </div>
     <div class="tray-inner">
+      <div class="tray-title">
+        <span>Options</span>
+      </div>
+      <div class="leftClickSection">
+        <label for="colourPicker">Left Click</label>
+        <input class="colourPicker" id="colourPicker" type="text">
+      </div>
     </div>
   </div>
   <canvas id="canvas"></canvas>

@@ -4,6 +4,9 @@ var canvas, ctx, cursor;
 var shapes = [];
 var shapeSize = 50;
 
+var rcCol = '#ffffff';
+var lcCol = '#000000';
+
 function Shape(x, y, width, height, colour) {
   this.x = x;
   this.y = y;
@@ -112,11 +115,11 @@ function registerEvents() {
     switch(e.which) {
       case 1:
         // Left click
-        addShape(e.pageX, e.pageY, '#000000');
+        addShape(e.pageX, e.pageY, lcCol);
         break;
       case 3:
         // Right click
-        addShape(e.pageX, e.pageY, '#ffffff');
+        addShape(e.pageX, e.pageY, rcCol);
         break;
     }
 
@@ -142,6 +145,15 @@ function registerEvents() {
   });
 }
 
+function createObjects() {
+  $(".colourPicker").spectrum({
+    color: "#000000",
+    change: function(c) {
+      lcCol = c.toHexString();
+    }
+  });
+}
+
 function init() {
   canvas = document.getElementById('canvas');
 
@@ -150,6 +162,7 @@ function init() {
 
   ctx = canvas.getContext('2d');
   cursor = new Shape(0, 0, 0, 0);
+  createObjects();
   registerEvents();
 }
 
