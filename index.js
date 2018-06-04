@@ -4,6 +4,9 @@ var canvas, ctx, cursor;
 var shapes = [];
 var shapeSize = 50;
 
+var clicking = false;
+var side = '';
+
 var rcCol = '#ffffff';
 var lcCol = '#000000';
 
@@ -56,6 +59,20 @@ function Shape(x, y, width, height, colour) {
   this.setHeight = function(heightChange) {
     this.height = heightChange;
   }
+
+  this.scale = function(size) {
+    var xSquare = Math.floor(this.x / shapeSize);
+    var ySquare = Math.floor(this.y / shapeSize);
+
+    this.x = xSquare * size;
+    this.y = ySquare * size;
+    this.width = size;
+    this.height = size;
+  }
+
+  this.withinBoundary = function(x, y) {
+    return this.x <= x && this.x + this.width >= x && this.y <= y && this.y + this.height >= y && this.fill == (side == 'left' ? lcCol : rcCol);
+  }
 }
 
 function drawAll(cursorX, cursorY) {
@@ -98,6 +115,15 @@ function drawShapes() {
   }
 }
 
+function alreadyDrawn(x, y) {
+  for (var i = 0; i < shapes.length; i++) {
+    if (shapes[i].withinBoundary(x, y)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function addShape(cursorX, cursorY, colour) {
   var positionData = getCursorPosition(cursorX, cursorY);
 
@@ -107,23 +133,33 @@ function addShape(cursorX, cursorY, colour) {
 
 function registerEvents() {
   $(canvas).mousemove(function(e) {
+    if (clicking && !alreadyDrawn(e.pageX, e.pageY)) {
+      addShape(e.pageX, e.pageY, (side == 'left') ? lcCol : rcCol);
+    }
     drawAll(e.pageX, e.pageY);
   });
 
   $(canvas).mousedown(function(e) {
-
+    clicking = true;
     switch(e.which) {
       case 1:
+        side = 'left';
         // Left click
         addShape(e.pageX, e.pageY, lcCol);
         break;
       case 3:
+        side = 'right';
         // Right click
         addShape(e.pageX, e.pageY, rcCol);
         break;
     }
 
     drawAll(e.pageX, e.pageY);
+  });
+
+  $(canvas).mouseup(function(e) {
+    clicking = false;
+    side = '';
   });
 
   $('.caret-overlay').click(function(e) {
@@ -142,6 +178,15 @@ function registerEvents() {
       $('.tray-outer').removeClass('open-tray');
       $('.tray-outer').addClass('closed-tray');
     }
+  });
+
+  $('.saveSize').click(function(e) {
+    var newSize = $('.gridSize').val();
+    for (var i = 0; i < shapes.length; i++) {
+      shapes[i].scale(newSize);
+    }
+    shapeSize = newSize;
+    drawAll(0, 0);
   });
 }
 

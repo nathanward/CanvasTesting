@@ -69,3 +69,12 @@ body {
   top: 25%;
   margin-left: 10px;
 }
+
+.gridSize {
+  width: 50px;
+}
+
+.size-container {
+  top: 30px;
+  position: relative;
+}
